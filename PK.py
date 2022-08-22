@@ -137,7 +137,7 @@ while True:
                 print(f'{luckey}与{unlucky}交换血量')
                 player['blood'][luckey_num],player['blood'][unlucky_num]=player['blood'][unlucky_num],player['blood'][luckey_num]
                 m=player['blood'][luckey_num]
-                n=f(player['blood'][unlucky_num])
+                n=player['blood'][unlucky_num]
                 print(f'{luckey}剩余血量{m}，{unlucky}剩余血量{n}')
             if k==6:
                 j=r(150,200)
@@ -270,6 +270,5 @@ while True:
     else:
         print('Oops……无人生还……')
 
-    print()
     input('若要继续，请按Enter...')
     print()
