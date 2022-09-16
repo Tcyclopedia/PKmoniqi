@@ -5,6 +5,11 @@ while True:
     from math import floor as f
 
     player_num=int(input("玩家数量(建议≤10个)："))
+    if player_num>=10:
+        print('爬')
+    if player_num>=100:
+        print('捏麻麻石蜡')
+        break
     player_1=[]
     player_blood=[]
     player_buff=[]
@@ -15,6 +20,11 @@ while True:
     for i in range(player_num):
         m=input(f"玩家{i+1}名称：")
         n=r(250,350)
+        n1=r(1,10)
+        if n1<=2:
+            n-=100
+        elif n>=8:
+            n+=50
         player_1.append(m)
         player_blood[i]=n
 
@@ -25,10 +35,14 @@ while True:
         ls2=player['blood'][i]
         print(f'{ls1}的血量：{ls2}')
 
+    roundcnt=0
     killer=[]
+    lk,um,unum=0,0,0
 
     while True:
+        roundcnt+=1
         s(0.05)
+
         if len(player['name'])!=len(list(set(player['name']))):
             break
         for i in range(len(player['blood'])):
@@ -38,11 +52,37 @@ while True:
                 killer=list(set(killer))
         if len(list(set(killer)))+1>=len(player['name']):
             break
+        luckey=c(player['name'])
+        unlucky=c(player['name'])
+        for i in range(len(player['name'])):
+            if player['name'][i]==luckey:
+                luckey_num=i
+        while player['blood'][luckey_num]<=0:
+            luckey=c(player['name'])
+            for i in range(len(player['name'])):
+                if player['name'][i]==luckey:
+                    luckey_num=i
+        for i in range(len(player['name'])):
+            if player['name'][i]==unlucky:
+                unlucky_num=i
+        while unlucky==luckey or player['blood'][unlucky_num]<=0:
+            unlucky=c(player['name'])
+            for i in range(len(player['name'])):
+                if player['name'][i]==unlucky:
+                    unlucky_num=i
         for i in range(len(player['buff'])):
             bf=player['buff'][i]
             if player['blood'][i]<=0:
                 pass
             else:
+                if bf=='强力' and lk==2:
+                    pl=player['name'][i]
+                    for j in range(len(player['name'])):
+                        if j!=i:
+                            kl=player['name'][j]
+                            player['blood'][j]=-1
+                            print(f'{pl}给{kl}以致命一击，{kl}寄了')
+                    break
                 if bf=='中毒I':
                     j=r(5,20)
                     player['blood'][i]-=j
@@ -84,27 +124,12 @@ while True:
                     zdname=player['name'][i]
                     print(f'{zdname}中毒，直接寄了')
                     print()
-        luckey=c(player['name'])
-        unlucky=c(player['name'])
-        for i in range(len(player['name'])):
-            if player['name'][i]==luckey:
-                luckey_num=i
-        while player['blood'][luckey_num]<=0:
-            luckey=c(player['name'])
-            for i in range(len(player['name'])):
-                if player['name'][i]==luckey:
-                    luckey_num=i
-        for i in range(len(player['name'])):
-            if player['name'][i]==unlucky:
-                unlucky_num=i
-        while unlucky==luckey or player['blood'][unlucky_num]<=0:
-            unlucky=c(player['name'])
-            for i in range(len(player['name'])):
-                if player['name'][i]==unlucky:
-                    unlucky_num=i
+        if bf=='强力':
+            break
+
         i=r(0,100)
         if i<=20:
-            k=r(1,13)
+            k=r(1,16)
             if k==1:
                 j=r(25,50)
                 print(f'{luckey}对{unlucky}发动吸血，造成{j}点伤害')
@@ -189,13 +214,13 @@ while True:
                     n=f(player['blood'][unlucky_num])
                     print(f'，造成{y}点伤害\n{unlucky}剩余血量{n}',end='')
                     if n<=0:
-                        print('，寄了')
+                        print('，寄了',end='')
                         break
                     else:
                         if z<j-1:
                             s(0.05)
                             print(f'\n{luckey}继续发动连击',end='')
-                print(f'{luckey}停止连击')
+                print(f'\n{luckey}停止连击')
             if k==11:
                 print(f'{luckey}误把自己当作攻击对象')
                 j=r(1,10)
@@ -220,8 +245,8 @@ while True:
                 j=r(2,5)
                 print(f'{luckey}超级加倍')
                 player['blood'][luckey_num]*=j
-                m=f(player['blood'][luckey_num])
-                if m>1500:
+                m=player['blood'][luckey_num]
+                if m>=1500:
                     player['blood'][luckey_num]=1500
                     print(f'{luckey}剩余血量1500，成为了一个一个野獣先辈哼哼啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊')
                 else:
@@ -244,6 +269,35 @@ while True:
                     player['buff'][unlucky_num]='中毒V'
                 unlucky_buff=player['buff'][unlucky_num]
                 print(f'{unlucky}目前中毒效果：{unlucky_buff}\n{unlucky}：哼哼啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊')
+            if k==14:
+                player['buff'][luckey_num]='强力'
+                print(f'{luckey}成为了一拳超人，力量倍增')
+                lk=r(1,2)
+                if lk==1:
+                    print(f'{luckey}被群殴致死')
+                    player['blood'][luckey_num]=-1
+            if k==15:
+                un=r(1,2)
+                if un==1:
+                    unluckiest=luckey
+                    unum=luckey_num
+                else:
+                    unluckiest=unlucky
+                    unum=unlucky_num
+                print(f'作者一怒之下鲨了{unluckiest}')
+                player['blood'][unum]=-1
+            if k==16:
+                print(f'{luckey}一口吞下了{unlucky}',end='')
+                player['blood'][luckey_num]+=player['blood'][unlucky_num]
+                un=r(1,2)
+                if un==1:
+                    print(f'\n{luckey}发生意外，也寄了')
+                    player['blood'][luckey_num]=-1
+                else:
+                    m=player['blood'][luckey_num]
+                    print(f'{luckey}剩余血量{m}')
+                player['blood'][unlucky_num]=-1
+
         else:
                 j=r(25,75)
                 if j>=50:
@@ -261,7 +315,7 @@ while True:
                 else:
                     print()
 
-    if len(list(set(killer)))+1==len(player['name']):
+    if len(list(set(killer)))+1==len(player['name']) or bf=='强力':
         for i in range(len(player['blood'])):
             if player['blood'][i]>0:
                 winner=player['name'][i]
@@ -270,5 +324,13 @@ while True:
     else:
         print('Oops……无人生还……')
 
-    input('若要继续，请按Enter...')
+    caidan=input('若要继续，请按Enter...')
     print()
+    if caidan=='tt':
+        break
+print('你来此何干呐(其实是彩蛋')
+s(1)
+print('但是你好像回不去了捏')
+s(5)
+while True:
+    print('蚌')
